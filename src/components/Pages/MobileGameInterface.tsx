@@ -187,30 +187,382 @@ const MobileGameInterface: React.FC<MobileGameInterfaceProps> = ({ onBack }) => 
           ? 'bg-slate-900/95 border-slate-800' 
           : 'bg-white/95 border-emerald-200/50'
       }`}>
-        <div className="px-4 py-3">
+        {/* Primeira linha do header */}
+        <div className="px-4 py-2 border-b border-opacity-30">
           <div className="flex items-center justify-between">
-            <button
-              onClick={onBack}
-              className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${
-                isDark 
-                  ? 'hover:bg-slate-800 text-white' 
-                  : 'hover:bg-emerald-100 text-emerald-900'
-              }`}
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            
+            {/* Lado esquerdo: Foto de perfil, nome e stats de humor */}
             <div className="flex items-center gap-3">
-              <div className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full transition-colors duration-300 ${
+              {/* Foto de perfil do Alex */}
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center border-2 border-white/20">
+                <span className="text-sm">👨‍💼</span>
+              </div>
+              
+              {/* Nome Alex */}
+              <span className={`font-bold text-sm transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-emerald-900'
+              }`}>
+                Alex
+              </span>
+              
+              {/* Stats de humor */}
+              <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-colors duration-300 ${
                 isDark ? 'bg-slate-800' : 'bg-emerald-100'
               }`}>
-                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-400" />
-                <span className={`text-xs sm:text-sm font-medium transition-colors duration-300 ${
+                <span>{getCharacterMoodEmoji()}</span>
+                <span className={`font-medium transition-colors duration-300 ${
                   isDark ? 'text-white' : 'text-emerald-900'
                 }`}>
-                  Dia {gameState.day}
+                  {gameState.character.mood}
                 </span>
               </div>
+            </div>
+            
+            {/* Lado direito: Controles do jogo */}
+            <div className="flex items-center gap-1">
+              {/* Play/Pause */}
+              <button
+                onClick={handlePlayPause}
+                className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+                  isDark 
+                    ? 'hover:bg-slate-800 text-white' 
+                    : 'hover:bg-emerald-100 text-emerald-900'
+                }`}
+              >
+                {gameState.isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              </button>
+              
+              {/* Mutar áudio */}
+              <button
+                onClick={toggleMute}
+                className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+                  isDark 
+                    ? 'hover:bg-slate-800 text-white' 
+                    : 'hover:bg-emerald-100 text-emerald-900'
+                }`}
+              >
+                {audioSettings.isMuted ? (
+                  <VolumeX className="w-4 h-4" />
+                ) : (
+                  <Volume2 className="w-4 h-4" />
+                )}
+              </button>
+              
+              {/* Salvar */}
+              <button
+                onClick={() => playButtonSound()}
+                className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+                  isDark 
+                    ? 'hover:bg-slate-800 text-white' 
+                    : 'hover:bg-emerald-100 text-emerald-900'
+                }`}
+              >
+                <Save className="w-4 h-4" />
+              </button>
+              
+              {/* Reiniciar */}
+              <button
+                onClick={handleReset}
+                className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+                  isDark 
+                    ? 'hover:bg-slate-800 text-white' 
+                    : 'hover:bg-emerald-100 text-emerald-900'
+                }`}
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Segunda linha do header */}
+        <div className="px-4 py-2">
+          <div className="flex items-center justify-between">
+            {/* Lado esquerdo: Dia da semana e pontuação */}
+            <div className="flex items-center gap-4">
+              {/* Dia da semana */}
+              <div className={`flex items-center gap-1 px-2 py-1 rounded-full transition-colors duration-300 ${
+                isDark ? 'bg-slate-800' : 'bg-emerald-100'
+              }`}>
+                <Calendar className="w-3 h-3 text-emerald-400" />
+                <span className={`text-xs font-medium transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-emerald-900'
+                }`}>
+                  Domingo
+                </span>
+              </div>
+              
+              {/* Pontuação geral total */}
+              <div className={`flex items-center gap-1 px-2 py-1 rounded-full transition-colors duration-300 ${
+                isDark ? 'bg-slate-800' : 'bg-emerald-100'
+              }`}>
+                <Trophy className="w-3 h-3 text-yellow-400" />
+                <span className={`text-xs font-medium transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-emerald-900'
+                }`}>
+                  {gameState.completedActions.length * 10} pts
+                </span>
+              </div>
+            </div>
+            
+            {/* Lado direito: Velocidade do tempo */}
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => playButtonSound()}
+                className={`px-2 py-1 rounded text-xs font-medium transition-all duration-200 ${
+                  isDark 
+                    ? 'bg-slate-800 text-white hover:bg-slate-700' 
+                    : 'bg-emerald-100 text-emerald-900 hover:bg-emerald-200'
+                }`}
+              >
+                1x
+              </button>
+              <button
+                onClick={() => playButtonSound()}
+                className={`px-2 py-1 rounded text-xs font-medium transition-all duration-200 ${
+                  isDark 
+                    ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' 
+                    : 'bg-white text-emerald-700 hover:bg-emerald-50'
+                }`}
+              >
+                2x
+              </button>
+              <button
+                onClick={() => playButtonSound()}
+                className={`px-2 py-1 rounded text-xs font-medium transition-all duration-200 ${
+                  isDark 
+                    ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' 
+                    : 'bg-white text-emerald-700 hover:bg-emerald-50'
+                }`}
+              >
+                4x
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Terceira linha: 5 fatores */}
+        <div className="px-4 py-2 border-t border-opacity-30">
+          <div className="grid grid-cols-5 gap-2 text-xs">
+            {/* Energia */}
+            <button
+              className={`flex flex-col items-center p-1 rounded transition-colors duration-300 ${
+                isDark 
+                  ? 'hover:bg-slate-800' 
+                  : 'hover:bg-emerald-100'
+              }`}
+            >
+              <span className="text-lg mb-1">⚡</span>
+              <span className={`font-medium transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-emerald-900'
+              }`}>
+                {gameState.character.energy}
+              </span>
+              <div className={`w-full h-1 rounded-full mt-1 transition-colors duration-300 ${
+                isDark ? 'bg-slate-700' : 'bg-emerald-200'
+              }`}>
+                <div 
+                  className="h-full bg-green-500 rounded-full transition-all duration-300"
+                  style={{ width: `${gameState.character.energy}%` }}
+                />
+              </div>
+            </button>
+            
+            {/* Fome */}
+            <button
+              className={`flex flex-col items-center p-1 rounded transition-colors duration-300 ${
+                isDark 
+                  ? 'hover:bg-slate-800' 
+                  : 'hover:bg-emerald-100'
+              }`}>
+              <span className="text-lg mb-1">🍽️</span>
+              <span className={`font-medium transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-emerald-900'
+              }`}>
+                {gameState.character.hunger}
+              </span>
+              <div className={`w-full h-1 rounded-full mt-1 transition-colors duration-300 ${
+                isDark ? 'bg-slate-700' : 'bg-emerald-200'
+              }`}>
+                <div 
+                  className="h-full bg-orange-500 rounded-full transition-all duration-300"
+                  style={{ width: `${gameState.character.hunger}%` }}
+                />
+              </div>
+            </button>
+            
+            {/* Higiene */}
+            <button
+              className={`flex flex-col items-center p-1 rounded transition-colors duration-300 ${
+                isDark 
+                  ? 'hover:bg-slate-800' 
+                  : 'hover:bg-emerald-100'
+              }`}>
+              <span className="text-lg mb-1">🚿</span>
+              <span className={`font-medium transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-emerald-900'
+              }`}>
+                {gameState.character.hygiene}
+              </span>
+              <div className={`w-full h-1 rounded-full mt-1 transition-colors duration-300 ${
+                isDark ? 'bg-slate-700' : 'bg-emerald-200'
+              }`}>
+                <div 
+                  className="h-full bg-blue-500 rounded-full transition-all duration-300"
+                  style={{ width: `${gameState.character.hygiene}%` }}
+                />
+              </div>
+            </button>
+            
+            {/* Social */}
+            <button
+              className={`flex flex-col items-center p-1 rounded transition-colors duration-300 ${
+                isDark 
+                  ? 'hover:bg-slate-800' 
+                  : 'hover:bg-emerald-100'
+              }`}>
+              <span className="text-lg mb-1">👥</span>
+              <span className={`font-medium transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-emerald-900'
+              }`}>
+                75
+              </span>
+              <div className={`w-full h-1 rounded-full mt-1 transition-colors duration-300 ${
+                isDark ? 'bg-slate-700' : 'bg-emerald-200'
+              }`}>
+                <div 
+                  className="h-full bg-purple-500 rounded-full transition-all duration-300"
+                  style={{ width: '75%' }}
+                />
+              </div>
+            </button>
+            
+            {/* Produção */}
+            <button
+              className={`flex flex-col items-center p-1 rounded transition-colors duration-300 ${
+                isDark 
+                  ? 'hover:bg-slate-800' 
+                  : 'hover:bg-emerald-100'
+              }`}>
+              <span className="text-lg mb-1">💼</span>
+              <span className={`font-medium transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-emerald-900'
+              }`}>
+                85
+              </span>
+              <div className={`w-full h-1 rounded-full mt-1 transition-colors duration-300 ${
+                isDark ? 'bg-slate-700' : 'bg-emerald-200'
+              }`}>
+                <div 
+                  className="h-full bg-indigo-500 rounded-full transition-all duration-300"
+                  style={{ width: '85%' }}
+                />
+              </div>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Botão de voltar fixo no canto superior esquerdo */}
+      <div className="fixed top-4 left-4 z-50">
+        <button
+          onClick={onBack}
+          className={`p-2 rounded-full backdrop-blur-sm transition-all duration-200 hover:scale-110 ${
+            isDark 
+              ? 'bg-slate-900/80 hover:bg-slate-800 text-white border border-slate-700' 
+              : 'bg-white/80 hover:bg-emerald-100 text-emerald-900 border border-emerald-200'
+          }`}
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Indicador de período do dia fixo no canto superior direito */}
+      <div className="fixed top-4 right-4 z-50">
+        <div className={`flex items-center gap-1 px-3 py-2 rounded-full backdrop-blur-sm transition-colors duration-300 ${
+          isDark ? 'bg-slate-900/80 border border-slate-700' : 'bg-white/80 border border-emerald-200'
+        }`}>
+          <span className={`text-sm font-medium transition-colors duration-300 ${
+            isDark ? 'text-white' : 'text-emerald-900'
+          }`}>
+            {gameState.timeOfDay === 'morning' && '🌅 Manhã'}
+            {gameState.timeOfDay === 'afternoon' && '☀️ Tarde'}
+            {gameState.timeOfDay === 'evening' && '🌆 Noite'}
+            {gameState.timeOfDay === 'night' && '🌙 Madrugada'}
+          </span>
+        </div>
+      </div>
+
+      {/* Game Area */}
+      <div className="relative h-[50vh] overflow-hidden">
+        <div className={getRoomBackground()}></div>
+        
+        {/* Character */}
+        <div className="pixel-character">
+          <div className="alex-sprite-2d alex-idle-2d">
+            <div className="character-shadow-2d"></div>
+          </div>
+        </div>
+        
+        {/* Room Objects */}
+        {roomObjects[gameState.currentRoom].map((obj) => (
+          <button
+            key={obj.id}
+            onClick={() => handleObjectClick(obj.id, obj.action)}
+            className={`pixel-object pixel-${obj.id} ${
+              gameState.completedActions.includes(obj.id) ? 'used' : 'available'
+            }`}
+            disabled={gameState.completedActions.includes(obj.id)}
+          >
+            <span className="text-2xl">{obj.emoji}</span>
+            {gameState.completedActions.includes(obj.id) && (
+              <div className="pixel-completion">✓</div>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Room Navigation */}
+      <div className={`px-4 py-3 border-t transition-colors duration-300 ${
+        isDark ? 'border-slate-800 bg-slate-900/50' : 'border-emerald-200 bg-emerald-50/50'
+      }`}>
+        <div className="flex justify-center gap-2 overflow-x-auto">
+          {Object.keys(roomObjects).map((room) => (
+            <button
+              key={room}
+              onClick={() => handleRoomChange(room as typeof gameState.currentRoom)}
+              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+                gameState.currentRoom === room
+                  ? 'bg-purple-500 text-white'
+                  : isDark
+                    ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                    : 'bg-white text-emerald-700 hover:bg-emerald-100'
+              }`}
+            >
+              {room === 'bedroom' && '🛏️ Quarto'}
+              {room === 'living' && '🛋️ Sala'}
+              {room === 'kitchen' && '🍽️ Cozinha'}
+              {room === 'gym' && '🏋️ Academia'}
+              {room === 'bathroom' && '🚿 Banheiro'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Game Controls */}
+      <div className={`px-4 py-4 border-t transition-colors duration-300 ${
+        isDark ? 'border-slate-800 bg-slate-900/50' : 'border-emerald-200 bg-emerald-50/50'
+      }`}>
+        <p className={`text-xs text-center transition-colors duration-300 ${
+          isDark ? 'text-slate-400' : 'text-emerald-600'
+        }`}>
+          Explore os ambientes e complete as atividades para melhorar o sono do Alex!
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default MobileGameInterface;
               
               <div className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full transition-colors duration-300 ${
                 isDark ? 'bg-slate-800' : 'bg-emerald-100'
