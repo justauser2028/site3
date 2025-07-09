@@ -200,14 +200,7 @@ const MobileGameInterface: React.FC<MobileGameInterfaceProps> = ({ onBack }) => 
               <ArrowLeft className="w-5 h-5" />
             </button>
             
-            <div className="flex items-center gap-2">
-              <span className="text-lg">🌙</span>
-              <h1 className={`text-lg font-bold transition-colors duration-300 ${
-                isDark ? 'text-white' : 'text-emerald-900'
-              }`}>Dream Story</h1>
-            </div>
-            
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <div className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full transition-colors duration-300 ${
                 isDark ? 'bg-slate-800' : 'bg-emerald-100'
               }`}>
@@ -215,9 +208,44 @@ const MobileGameInterface: React.FC<MobileGameInterfaceProps> = ({ onBack }) => 
                 <span className={`text-xs sm:text-sm font-medium transition-colors duration-300 ${
                   isDark ? 'text-white' : 'text-emerald-900'
                 }`}>
-                  D{gameState.day}
+                  Dia {gameState.day}
                 </span>
               </div>
+              
+              <div className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full transition-colors duration-300 ${
+                isDark ? 'bg-slate-800' : 'bg-emerald-100'
+              }`}>
+                <Trophy className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" />
+                <span className={`text-xs sm:text-sm font-medium transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-emerald-900'
+                }`}>
+                  {gameState.completedActions.length}/15
+                </span>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-1">
+              <button
+                onClick={handlePlayPause}
+                className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+                  isDark 
+                    ? 'hover:bg-slate-800 text-white' 
+                    : 'hover:bg-emerald-100 text-emerald-900'
+                }`}
+              >
+                {gameState.isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              </button>
+              
+              <button
+                onClick={handleReset}
+                className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+                  isDark 
+                    ? 'hover:bg-slate-800 text-white' 
+                    : 'hover:bg-emerald-100 text-emerald-900'
+                }`}
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
               
               <button
                 onClick={toggleMute}
@@ -305,15 +333,6 @@ const MobileGameInterface: React.FC<MobileGameInterfaceProps> = ({ onBack }) => 
               isDark ? 'text-white' : 'text-emerald-900'
             }`}>Alex {getCharacterMoodEmoji()}</span>
           </div>
-          
-          <div className="flex items-center gap-1">
-            <Trophy className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" />
-            <span className={`text-xs sm:text-sm font-medium transition-colors duration-300 ${
-              isDark ? 'text-white' : 'text-emerald-900'
-            }`}>
-              {gameState.completedActions.length}/15
-            </span>
-          </div>
         </div>
         
         <div className="grid grid-cols-3 gap-2 text-xs">
@@ -374,54 +393,11 @@ const MobileGameInterface: React.FC<MobileGameInterfaceProps> = ({ onBack }) => 
       <div className={`px-4 py-4 border-t transition-colors duration-300 ${
         isDark ? 'border-slate-800 bg-slate-900/50' : 'border-emerald-200 bg-emerald-50/50'
       }`}>
-        <div className="flex justify-center gap-3">
-          <button
-            onClick={handlePlayPause}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-              gameState.isPlaying
-                ? 'bg-red-500 hover:bg-red-600 text-white'
-                : 'bg-green-500 hover:bg-green-600 text-white'
-            }`}
-          >
-            {gameState.isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-            <span className="hidden sm:block">
-              {gameState.isPlaying ? 'Pausar' : 'Jogar'}
-            </span>
-          </button>
-          
-          <button
-            onClick={handleReset}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-              isDark 
-                ? 'bg-slate-700 hover:bg-slate-600 text-white' 
-                : 'bg-gray-200 hover:bg-gray-300 text-gray-900'
-            }`}
-          >
-            <RotateCcw className="w-4 h-4" />
-            <span className="hidden sm:block">Reset</span>
-          </button>
-          
-          <div className="hidden sm:block">
-            <button
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                isDark 
-                  ? 'bg-slate-700 hover:bg-slate-600 text-white' 
-                  : 'bg-gray-200 hover:bg-gray-300 text-gray-900'
-              }`}
-            >
-              <Save className="w-4 h-4" />
-              Salvar
-            </button>
-          </div>
-        </div>
-        
-        <div className="hidden sm:block">
-          <p className={`text-xs transition-colors duration-300 ${
-            isDark ? 'text-slate-400' : 'text-emerald-600'
-          }`}>
-            Explore os ambientes e complete as atividades para melhorar o sono do Alex!
-          </p>
-        </div>
+        <p className={`text-xs text-center transition-colors duration-300 ${
+          isDark ? 'text-slate-400' : 'text-emerald-600'
+        }`}>
+          Explore os ambientes e complete as atividades para melhorar o sono do Alex!
+        </p>
         
         <div className="fixed top-16 right-4 z-50">
           <div className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full transition-colors duration-300 ${
